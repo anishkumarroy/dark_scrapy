@@ -101,7 +101,6 @@ def scrape_link():
     send_requests1(lst[i])
     if(lst[i].startswith('http://dkforest')):
       string=lst[i][:-2]
-
       login.sesCreate(string)
 
 

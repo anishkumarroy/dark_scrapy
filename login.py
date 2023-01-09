@@ -4,6 +4,8 @@ from bs4 import BeautifulSoup
 from stem import Signal, process
 from stem.control import Controller
 from urllib.request import Request, urlopen
+import re
+import pymongo_insert
 
 payload = {
      'csrf': '',
@@ -35,7 +37,7 @@ except Exception as e:
      print("Error:", e)
 
 def sesCreate(drk):
-     print(drk)
+     #print(drk)
      ses = requests.Session()
      # try:
      #      tor_process = stem.process.launch_tor_with_config(
@@ -58,13 +60,39 @@ def sesCreate(drk):
      payload['csrf'] = soup.find('input', attrs={'name':'csrf'})['value']
 
      ses.post(drk, data=payload, proxies=torProxy)
-     p = ses.get((drk+"/links"), proxies=torProxy)
-     print(p.text)
+     forum = ses.get((drk+"/forum"), proxies=torProxy)
+     soup=BeautifulSoup(forum.text, 'html.parser')
+     b=soup.find_all('span')
+     f=open("forum.txt", 'w')
+     for element in b:
+          content=element.text
+          f.write(content)
+     f.close()
+     link=ses.get((drk+"/links"), proxies=torProxy)
+     soup=BeautifulSoup(link.text,'html.parser')
+     LIST=[]
+     b=soup.find_all('a')
+     i=0
+     for l in b:
+          a=l.get('href')
+          if(a.endswith('onion') and a.startswith('http://')):
+               #print(a)
+               LIST.append({'id': i, 'link':a})
+               i+=1
+     #print(LIST)
+     pymongo_insert.collection_name.insert_many(LIST)
 
 
-# def print_bootstrap_lines(line):
-#      if "Bootstrpped " in line:
-#           print(line)
+     f=open("link.txt", 'w')
+     for element in b:
+          content=element.text
+          f.write(content)
+     f.close()
+
+
+def print_bootstrap_lines(line):
+     if "Bootstrpped " in line:
+          print(line)
 
 
 
