@@ -9,8 +9,8 @@ import pymongo_insert
 
 payload = {
      'csrf': '',
-     'username': 'RoyAnony',
-     'password': 'My_darkforest_platform23#'
+     'username': #REDACTED#,
+     'password': #REDACTED#
 }
 
 
